@@ -14,23 +14,29 @@ app.use(express.json());
 
 // (endpoint, callback function)
 app.get("/movies", (req, res) => {
-    res.send({ movies: movies });
+    res.send({ data: movies });
 });
 
 app.get("/movies/:id", (req, res) => {
-    res.send(movies[req.params.id-1])
+    const foundMovie = movies.find(movie => movie.id === Number(req.params.id));
+    foundMovie ? res.send({data: foundMovie}) : res.sendStatus(404).send({})
 });
 
 app.post("/movies", (req, res) => {
     movies.push(req.body);
+    res.send({})
 })
 
 app.put("/movies/:id", (req, res) => {
-    movies[req.params.id-1] = req.body;
+    const foundMovie = movies.find(movie => movie.id === Number(req.params.id));
+    foundMovie ? movies[foundMovie.id-1] = req.body : res.sendStatus(404).send({});
+    res.send({})
 })
 
 app.delete("/movies/:id", (req, res) => {
-    movies.splice(movies[req.params.id-1], 1);
+    const foundMovieIndex = movies.findIndex(movie => movie.id === Number(req.params.id));
+    foundMovieIndex !== -1 ? movies.splice(foundMovieIndex, 1) : res.sendStatus(404).send({})
+    res.send({})
 })
 
 
@@ -38,3 +44,5 @@ app.delete("/movies/:id", (req, res) => {
 app.listen(8080, ()=>{
     console.log("Server is running on port" , 8080)
 });
+
+console.log("_______________________________________________________________");
