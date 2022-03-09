@@ -23,13 +23,22 @@ app.get("/movies/:id", (req, res) => {
 });
 
 app.post("/movies", (req, res) => {
-    movies.push(req.body);
+    const movieToCreate = req.body;
+    movieToCreate.id = movies[movies.length-1].id + 1;
+    movies.push(movieToCreate);
     res.send({})
 })
+
 
 app.put("/movies/:id", (req, res) => {
     const foundMovie = movies.find(movie => movie.id === Number(req.params.id));
     foundMovie ? movies[foundMovie.id-1] = req.body : res.sendStatus(404).send({});
+    res.send({})
+})
+
+app.patch("/movies/:id", (req, res) =>{
+    const foundMovie = movies.find(movie => movie.id === Number(req.params.id));
+    foundMovie ? movies[foundMovie.id-1] = { ...foundMovie, ...req.body, id:foundMovie.id } : res.sendStatus(404).send({});
     res.send({})
 })
 
